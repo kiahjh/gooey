@@ -1,23 +1,22 @@
-const IS_MAC = navigator.userAgent.toLowerCase().includes("mac");
+import React from "react";
+import Sidebar from "./components/Sidebar";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="flex h-screen flex-col bg-white text-black">
-      <header className="flex h-10 shrink-0 items-center border-b border-neutral-200 select-none">
-        {IS_MAC && <div className="w-[80px] shrink-0" data-tauri-drag-region />}
-        <div
-          className="flex min-w-0 flex-1 items-center justify-center px-4"
-          data-tauri-drag-region
-        >
-          <span>gooey</span>
-        </div>
-      </header>
+    <div className="flex h-screen flex-col bg-mauve-100">
+      <header
+        data-tauri-drag-region
+        className="flex h-9 shrink-0 items-center select-none"
+      ></header>
 
-      <main className="flex flex-1 items-center justify-center">
-        <span className="text-sm text-neutral-500">blank slate</span>
+      <main className="flex flex-grow">
+        <Sidebar />
+        <div className="bg-mauve-50 flex-grow rounded-[12px] mr-2 mb-2 border-[0.5px] border-mauve-200 shadow shadow-mauve-500/20">
+          conversation
+        </div>
       </main>
     </div>
   );
-}
+};
 
 export default App;
