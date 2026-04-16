@@ -224,10 +224,10 @@ These do not block the vision, but need resolution in the next document:
 - How design tokens/components are exposed to extension authors
 
 ## Proposed next document
-`docs/gooey-v1-spec.md`
+`docs/2026-04-15-gooey-v0-spec.md`
 
 This should translate the vision into:
-- concrete v1 scope
+- concrete v0 scope
 - filesystem layout
 - app architecture
 - extension system design

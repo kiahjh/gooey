@@ -11,8 +11,8 @@ fn create_main_window(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>
             .title_bar_style(tauri::TitleBarStyle::Overlay)
             .hidden_title(true)
             .traffic_light_position(tauri::Position::Physical(tauri::PhysicalPosition {
-                x: 23,
-                y: 40,
+                x: 33,
+                y: 50,
             }));
     }
 
