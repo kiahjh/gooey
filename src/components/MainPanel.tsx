@@ -1,4 +1,5 @@
 import React from "react";
+import MainPanelPromptDock from "./main-panel/MainPanelPromptDock";
 
 const MainPanel: React.FC = () => {
   return (
@@ -7,6 +8,7 @@ const MainPanel: React.FC = () => {
         data-tauri-drag-region
         className="absolute inset-x-0 top-0 h-[47px] rounded-t-[10px]"
       />
+      <MainPanelPromptDock />
     </section>
   );
 };
