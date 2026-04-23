@@ -1,14 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
+import MainPanel from "./components/MainPanel";
 import Sidebar from "./components/Sidebar";
-import TitleBar from "./components/TitleBar";
+import { useGooeyStore } from "./state/useGooeyStore";
 
 const App: React.FC = () => {
+  const initialize = useGooeyStore((state) => state.initialize);
+
+  useEffect(() => {
+    void initialize();
+  }, [initialize]);
+
   return (
-    <div className="flex h-screen flex-col bg-[#131211] text-[#f2eeea]">
-      <TitleBar />
-      <main className="flex min-h-0 flex-grow">
-        <Sidebar />
-        <div className="mr-2 mb-2 flex-grow rounded-[12px] border-[0.5px] border-[#39342f] bg-[#1d1a18] shadow shadow-black/25"></div>
+    <div className="flex h-screen bg-[#131211] text-[#f2eeea]">
+      <Sidebar />
+      <main className="min-w-0 flex-1 py-2 pr-2">
+        <MainPanel />
       </main>
     </div>
   );

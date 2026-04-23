@@ -1,16 +1,23 @@
 import React from "react";
-import { ChevronRightIcon, FolderIcon, FolderOpenIcon } from "lucide-react";
-import ProjectActivityChip from "./ProjectActivityChip";
+import {
+  ChevronRightIcon,
+  FolderIcon,
+  FolderOpenIcon,
+  PlusIcon,
+} from "lucide-react";
 import SessionRow from "./SessionRow";
 import type { Workspace } from "./types";
+import SidebarIconButton from "./SidebarIconButton";
 import SidebarItemButton from "../ui/SidebarItemButton";
 
 type WorkspaceGroupProps = {
   workspace: Workspace;
   isCollapsed: boolean;
-  activeSessionId: string;
+  activeSessionId: string | null;
   onSessionSelect(sessionId: string): void;
+  onSessionArchive(sessionId: string): void;
   onToggleCollapse(): void;
+  onCreateSession(workspaceId: string): void;
 };
 
 const WorkspaceGroup: React.FC<WorkspaceGroupProps> = ({
@@ -18,16 +25,11 @@ const WorkspaceGroup: React.FC<WorkspaceGroupProps> = ({
   isCollapsed,
   activeSessionId,
   onSessionSelect,
+  onSessionArchive,
   onToggleCollapse,
+  onCreateSession,
 }) => {
   const WorkspaceIcon = isCollapsed ? FolderIcon : FolderOpenIcon;
-  const workingCount = workspace.sessions.filter(
-    (session) => session.status === "working",
-  ).length;
-  const unreadCount = workspace.sessions.filter(
-    (session) => session.status === "unread",
-  ).length;
-  const hasActivity = workingCount > 0 || unreadCount > 0;
 
   return (
     <div
@@ -35,39 +37,40 @@ const WorkspaceGroup: React.FC<WorkspaceGroupProps> = ({
         isCollapsed ? "mb-0" : "mb-2"
       }`}
     >
-      <SidebarItemButton
-        className="gap-2.5 py-1"
-        onClick={onToggleCollapse}
-        aria-expanded={!isCollapsed}
-      >
-        <WorkspaceIcon
-          aria-hidden="true"
-          className="h-[15px] w-[15px] shrink-0 text-[#8f857c]"
-          strokeWidth={1.9}
-        />
-        <span className="min-w-0 flex-1 truncate text-[13px] tracking-[-0.01em] text-[#8f857c]">
-          {workspace.name}
-        </span>
-        {hasActivity && (
-          <span
-            className={`mr-0.5 flex shrink-0 overflow-hidden transition-opacity duration-200 ease-out ${
-              isCollapsed ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <ProjectActivityChip
-              workingCount={workingCount}
-              unreadCount={unreadCount}
+      <div className="group relative">
+        <SidebarItemButton
+          className="min-w-0 gap-2.5 py-1 pr-12 group-hover:bg-[#201d1a]"
+          onClick={onToggleCollapse}
+          aria-expanded={!isCollapsed}
+        >
+          <WorkspaceIcon
+            aria-hidden="true"
+            className="h-[15px] w-[15px] shrink-0 text-[#8f857c]"
+            strokeWidth={1.9}
+          />
+          <span className="min-w-0 flex-1 truncate text-[13px] tracking-[-0.01em] text-[#8f857c]">
+            {workspace.name}
+          </span>
+        </SidebarItemButton>
+        <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center gap-1">
+          <span className="pointer-events-auto">
+            <SidebarIconButton
+              ariaLabel={`Create conversation in ${workspace.name}`}
+              icon={PlusIcon}
+              tooltip="New conversation"
+              onClick={() => onCreateSession(workspace.id)}
+              className="h-5 w-5 shrink-0 rounded-md opacity-0 pointer-events-none transition-opacity group-hover:opacity-100 group-hover:pointer-events-auto hover:bg-[#2a2521]"
             />
           </span>
-        )}
-        <ChevronRightIcon
-          aria-hidden="true"
-          className={`h-3.5 w-3.5 shrink-0 text-[#6f6760] transition-transform duration-150 ${
-            isCollapsed ? "" : "rotate-90"
-          }`}
-          strokeWidth={2}
-        />
-      </SidebarItemButton>
+          <ChevronRightIcon
+            aria-hidden="true"
+            className={`h-3.5 w-3.5 text-[#6f6760] transition-transform duration-150 ${
+              isCollapsed ? "" : "rotate-90"
+            }`}
+            strokeWidth={2}
+          />
+        </div>
+      </div>
       <div
         className={`grid overflow-hidden transition-[grid-template-rows,opacity,margin-top] duration-200 ease-out ${
           isCollapsed
@@ -88,6 +91,7 @@ const WorkspaceGroup: React.FC<WorkspaceGroupProps> = ({
                   session={session}
                   isActive={session.id === activeSessionId}
                   onSelect={onSessionSelect}
+                  onArchive={onSessionArchive}
                 />
               ))}
             </div>

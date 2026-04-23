@@ -1,26 +1,33 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Maximize2Icon, Minimize2Icon } from "lucide-react";
-import Tooltip from "../ui/Tooltip";
+import { Maximize2Icon, Minimize2Icon, PlusIcon } from "lucide-react";
+import ProjectsHeaderButton from "./ProjectsHeaderButton";
 import WorkspaceGroup from "./WorkspaceGroup";
 import type { Workspace } from "./types";
 
 type ProjectsSectionProps = {
   workspaces: Workspace[];
-  activeSessionId: string;
+  activeSessionId: string | null;
   onSessionSelect(sessionId: string): void;
+  onSessionArchive(sessionId: string): void;
+  onCreateSession(workspaceId: string): void;
+  onAddProject(): void;
+  onToggleWorkspaceCollapsed(workspaceId: string): void;
+  onToggleAllProjects(): void;
+  collapsedWorkspaceIds: Record<string, boolean>;
 };
 
 const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   workspaces,
   activeSessionId,
   onSessionSelect,
+  onSessionArchive,
+  onCreateSession,
+  onAddProject,
+  onToggleWorkspaceCollapsed,
+  onToggleAllProjects,
+  collapsedWorkspaceIds,
 }) => {
   const listRef = useRef<HTMLDivElement>(null);
-  const [collapsedWorkspaceIds, setCollapsedWorkspaceIds] = useState<
-    Record<string, boolean>
-  >(() =>
-    Object.fromEntries(workspaces.map((workspace) => [workspace.id, false])),
-  );
   const [showScrollFade, setShowScrollFade] = useState({
     top: false,
     bottom: false,
@@ -29,7 +36,10 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
     () => workspaces.every((workspace) => collapsedWorkspaceIds[workspace.id]),
     [collapsedWorkspaceIds, workspaces],
   );
-  const HeaderActionIcon = areAllCollapsed ? Maximize2Icon : Minimize2Icon;
+  const CollapseActionIcon = areAllCollapsed ? Maximize2Icon : Minimize2Icon;
+  const collapseActionLabel = areAllCollapsed
+    ? "Expand all projects"
+    : "Collapse all projects";
 
   useEffect(() => {
     const updateScrollFade = () => {
@@ -62,32 +72,21 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
         <h2 className="text-[12px] tracking-[0.01em] text-[#736961]">
           Projects
         </h2>
-        <Tooltip
-          side="top"
-          content={
-            areAllCollapsed ? "Expand all projects" : "Collapse all projects"
-          }
-        >
-          <button
-            type="button"
-            className="flex h-6 w-6 scale-100 items-center justify-center rounded-lg text-[#736961] transform-gpu transition-colors transition-transform duration-100 ease-out hover:bg-[#201d1a] hover:text-[#8c8178] active:scale-[0.92]"
-            aria-label={
-              areAllCollapsed ? "Expand all projects" : "Collapse all projects"
-            }
-            onClick={() =>
-              setCollapsedWorkspaceIds(
-                Object.fromEntries(
-                  workspaces.map((workspace) => [
-                    workspace.id,
-                    !areAllCollapsed,
-                  ]),
-                ),
-              )
-            }
-          >
-            <HeaderActionIcon aria-hidden="true" className="h-3.5 w-3.5" />
-          </button>
-        </Tooltip>
+        <div className="flex items-center gap-1">
+          <ProjectsHeaderButton
+            tooltip="Add project"
+            ariaLabel="Add project"
+            icon={PlusIcon}
+            onClick={onAddProject}
+          />
+          <ProjectsHeaderButton
+            tooltip={collapseActionLabel}
+            ariaLabel={collapseActionLabel}
+            icon={CollapseActionIcon}
+            onClick={onToggleAllProjects}
+            disabled={workspaces.length === 0}
+          />
+        </div>
       </div>
       <div className="relative flex min-h-0 flex-1 flex-col">
         <div
@@ -115,12 +114,9 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
               isCollapsed={collapsedWorkspaceIds[workspace.id] ?? false}
               activeSessionId={activeSessionId}
               onSessionSelect={onSessionSelect}
-              onToggleCollapse={() =>
-                setCollapsedWorkspaceIds((current) => ({
-                  ...current,
-                  [workspace.id]: !current[workspace.id],
-                }))
-              }
+              onSessionArchive={onSessionArchive}
+              onCreateSession={onCreateSession}
+              onToggleCollapse={() => onToggleWorkspaceCollapsed(workspace.id)}
             />
           ))}
         </div>

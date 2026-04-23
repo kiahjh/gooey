@@ -8,6 +8,7 @@ type MainSidebarButtonProps = {
   icon: LucideIcon;
   onClick(): void;
   kbd?: string;
+  disabled?: boolean;
 };
 
 const MainSidebarButton: React.FC<MainSidebarButtonProps> = ({
@@ -15,9 +16,14 @@ const MainSidebarButton: React.FC<MainSidebarButtonProps> = ({
   icon: Icon,
   onClick,
   kbd,
+  disabled = false,
 }) => {
   return (
-    <SidebarItemButton className="justify-between gap-2" onClick={onClick}>
+    <SidebarItemButton
+      className="justify-between gap-2"
+      onClick={onClick}
+      disabled={disabled}
+    >
       <div className="flex items-center gap-2">
         <Icon aria-hidden="true" className="h-[15px] w-[15px] text-[#aca49c]" />
         <span className="text-[13px] tracking-[-0.01em] text-[#f2eeea]">
