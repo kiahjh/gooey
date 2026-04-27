@@ -32,7 +32,7 @@ const PromptComposerShell: React.FC = () => {
   }, []);
 
   return (
-    <div className="mx-auto w-full max-w-[620px]">
+    <div className="prompt-composer mx-auto w-full max-w-[620px]">
       <div className="rounded-[24px] border border-[#37322d] bg-[#2c2926] shadow-[0_24px_72px_rgba(0,0,0,0.28)]">
         <div className="relative px-5 pb-[42px] pt-4">
           <textarea

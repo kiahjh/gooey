@@ -9,17 +9,23 @@ import {
 } from "../lib/backend";
 import { getErrorMessage } from "../lib/errors";
 import type { SidebarStateSnapshot, Workspace } from "../types/gooey";
+import type { AppScreen, SettingsSection } from "../types/settings";
 
 type LoadStatus = "idle" | "loading" | "ready" | "error";
 
 type GooeyStore = {
   status: LoadStatus;
   errorMessage: string | null;
+  currentScreen: AppScreen;
+  activeSettingsSection: SettingsSection;
   workspaces: Workspace[];
   activeWorkspaceId: string | null;
   activeSessionId: string | null;
   collapsedWorkspaceIds: Record<string, boolean>;
   initialize(): Promise<void>;
+  openSettings(section?: SettingsSection): void;
+  closeSettings(): void;
+  selectSettingsSection(section: SettingsSection): void;
   openWorkspace(): Promise<void>;
   createSession(workspaceId?: string): Promise<void>;
   archiveSession(sessionId: string): Promise<void>;
@@ -68,6 +74,8 @@ const resolveWorkspaceId = (
 export const useGooeyStore = create<GooeyStore>((set, get) => ({
   status: "idle",
   errorMessage: null,
+  currentScreen: "chat",
+  activeSettingsSection: "providers",
   workspaces: [],
   activeWorkspaceId: null,
   activeSessionId: null,
@@ -85,6 +93,25 @@ export const useGooeyStore = create<GooeyStore>((set, get) => ({
       const message = getErrorMessage(error, "Failed to load Gooey data.");
       set({ status: "error", errorMessage: message });
     }
+  },
+  openSettings(section = "providers") {
+    set({
+      currentScreen: "settings",
+      activeSettingsSection: section,
+      errorMessage: null,
+    });
+  },
+  closeSettings() {
+    set({
+      currentScreen: "chat",
+      errorMessage: null,
+    });
+  },
+  selectSettingsSection(section) {
+    set({
+      activeSettingsSection: section,
+      errorMessage: null,
+    });
   },
   async openWorkspace() {
     try {

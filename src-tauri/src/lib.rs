@@ -1,7 +1,12 @@
 mod app_state;
+mod provider_auth;
 
 use app_state::{
     add_workspace, archive_session, create_session, get_sidebar_state, select_session,
+};
+use provider_auth::{
+    connect_openai_chatgpt_account, disconnect_openai_chatgpt_account,
+    get_openai_connection_status, refresh_openai_chatgpt_account,
 };
 
 fn create_main_window(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
@@ -41,7 +46,11 @@ pub fn run() {
             add_workspace,
             archive_session,
             create_session,
-            select_session
+            select_session,
+            get_openai_connection_status,
+            connect_openai_chatgpt_account,
+            disconnect_openai_chatgpt_account,
+            refresh_openai_chatgpt_account
         ])
         .setup(|app| {
             create_main_window(app)?;

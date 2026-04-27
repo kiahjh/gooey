@@ -20,6 +20,12 @@ body,
   background: #131211;
 }
 
+body,
+body * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 body {
   margin: 0;
   font-family:
@@ -32,5 +38,10 @@ body {
 button,
 input,
 textarea {
-  font: inherit;
+  font-family: inherit;
+}
+
+.prompt-composer textarea {
+  -webkit-user-select: text;
+  user-select: text;
 }
