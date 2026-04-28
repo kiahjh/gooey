@@ -6,7 +6,7 @@ use app_state::{
 };
 use provider_auth::{
     connect_openai_chatgpt_account, disconnect_openai_chatgpt_account,
-    get_openai_connection_status, refresh_openai_chatgpt_account,
+    get_configured_provider_models, get_openai_connection_status, refresh_openai_chatgpt_account,
 };
 
 fn create_main_window(app: &tauri::App) -> Result<(), Box<dyn std::error::Error>> {
@@ -50,7 +50,8 @@ pub fn run() {
             get_openai_connection_status,
             connect_openai_chatgpt_account,
             disconnect_openai_chatgpt_account,
-            refresh_openai_chatgpt_account
+            refresh_openai_chatgpt_account,
+            get_configured_provider_models
         ])
         .setup(|app| {
             create_main_window(app)?;

@@ -32,6 +32,15 @@ pub struct ProviderConnectionStatus {
     pub expires_at: Option<String>,
 }
 
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ProviderModel {
+    pub id: String,
+    pub label: String,
+    pub provider: String,
+    pub provider_label: String,
+}
+
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(tag = "type", rename_all = "camelCase")]
 enum ProviderAuthRecord {
@@ -106,6 +115,23 @@ pub async fn refresh_openai_chatgpt_account() -> Result<ProviderConnectionStatus
     openai_status()
 }
 
+#[tauri::command]
+pub async fn get_configured_provider_models() -> Result<Vec<ProviderModel>, String> {
+    refresh_openai_access_token_if_needed().await?;
+
+    let auth = read_auth_file()?;
+    let mut models = Vec::new();
+
+    if matches!(
+        auth.get("openai"),
+        Some(ProviderAuthRecord::ChatgptSubscription { .. })
+    ) {
+        models.extend(openai_chatgpt_subscription_models());
+    }
+
+    Ok(models)
+}
+
 fn openai_status() -> Result<ProviderConnectionStatus, String> {
     let auth = read_auth_file()?;
     let record = auth.get("openai");
@@ -150,6 +176,27 @@ fn persist_openai_subscription(tokens: TokenResponse) -> Result<(), String> {
     );
 
     write_auth_file(&auth)
+}
+
+fn openai_chatgpt_subscription_models() -> Vec<ProviderModel> {
+    [
+        ("openai/gpt-5.4", "GPT-5.4"),
+        ("openai/gpt-5.4-mini", "GPT-5.4 Mini"),
+        ("openai/gpt-5.3-codex", "GPT-5.3 Codex"),
+        ("openai/gpt-5.2", "GPT-5.2"),
+        ("openai/gpt-5.2-codex", "GPT-5.2 Codex"),
+        ("openai/gpt-5.1-codex", "GPT-5.1 Codex"),
+        ("openai/gpt-5.1-codex-max", "GPT-5.1 Codex Max"),
+        ("openai/gpt-5.1-codex-mini", "GPT-5.1 Codex Mini"),
+    ]
+    .into_iter()
+    .map(|(id, label)| ProviderModel {
+        id: id.into(),
+        label: label.into(),
+        provider: "openai".into(),
+        provider_label: "OpenAI".into(),
+    })
+    .collect()
 }
 
 async fn exchange_code_for_tokens(

@@ -1,6 +1,9 @@
 import { invoke } from "@tauri-apps/api/core";
 import type { SidebarStateSnapshot } from "../types/gooey";
-import type { ProviderConnectionStatus } from "../types/providers";
+import type {
+  ConfiguredProviderModel,
+  ProviderConnectionStatus,
+} from "../types/providers";
 
 export const getSidebarState = () =>
   invoke<SidebarStateSnapshot>("get_sidebar_state");
@@ -28,3 +31,6 @@ export const disconnectOpenAIChatGPTAccount = () =>
 
 export const refreshOpenAIChatGPTAccount = () =>
   invoke<ProviderConnectionStatus>("refresh_openai_chatgpt_account");
+
+export const getConfiguredProviderModels = () =>
+  invoke<ConfiguredProviderModel[]>("get_configured_provider_models");

@@ -8,3 +8,9 @@ export type ProviderConnectionStatus = {
   provider: "openai";
 };
 
+export type ConfiguredProviderModel = {
+  id: string;
+  label: string;
+  provider: "anthropic" | "openai";
+  providerLabel: string;
+};
