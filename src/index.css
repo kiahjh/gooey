@@ -46,6 +46,12 @@ textarea {
   user-select: text;
 }
 
+.selectable-whitespace,
+.selectable-whitespace * {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 @keyframes dropdownIn {
   from {
     opacity: 0;
@@ -55,5 +61,334 @@ textarea {
   to {
     opacity: 1;
     transform: scale(1) translateY(0);
+  }
+}
+
+.markdown-content {
+  color: #e6ded6;
+  line-height: 1.62;
+  overflow-wrap: anywhere;
+}
+
+.markdown-content > :first-child {
+  margin-top: 0;
+}
+
+.markdown-content > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-content p {
+  margin: 0.48em 0;
+}
+
+.markdown-content h1,
+.markdown-content h2,
+.markdown-content h3,
+.markdown-content h4 {
+  color: #f0e9e1;
+  font-weight: 650;
+  letter-spacing: 0;
+  margin: 0.86em 0 0.3em;
+}
+
+.markdown-content h1 {
+  font-size: 1.35em;
+  line-height: 1.35;
+}
+
+.markdown-content h2 {
+  font-size: 1.18em;
+  line-height: 1.4;
+}
+
+.markdown-content h3,
+.markdown-content h4 {
+  font-size: 1em;
+  line-height: 1.45;
+}
+
+.markdown-content a {
+  color: #f0c8a2;
+  text-decoration-color: rgba(240, 200, 162, 0.42);
+  text-decoration-line: underline;
+  text-underline-offset: 3px;
+  transition:
+    color 140ms ease,
+    text-decoration-color 140ms ease;
+}
+
+.markdown-content a:hover {
+  color: #ffe0bd;
+  text-decoration-color: rgba(255, 224, 189, 0.72);
+}
+
+.markdown-content strong {
+  color: #f2ece5;
+  font-weight: 680;
+}
+
+.markdown-content em {
+  color: #eee5dc;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  margin: 0.52em 0;
+  padding-left: 1.18rem;
+}
+
+.markdown-content ul {
+  list-style: disc;
+}
+
+.markdown-content ol {
+  list-style: decimal;
+}
+
+.markdown-content li {
+  margin: 0.16em 0;
+  padding-left: 0.04rem;
+}
+
+.markdown-content li > p {
+  display: inline;
+  margin: 0;
+}
+
+.markdown-content li > ul,
+.markdown-content li > ol {
+  margin: 0.18em 0;
+}
+
+.markdown-content li::marker {
+  color: #9f958b;
+}
+
+.markdown-content input[type="checkbox"] {
+  accent-color: #d2b08f;
+  margin-right: 0.45rem;
+  transform: translateY(1px);
+}
+
+.markdown-content blockquote {
+  border-left: 2px solid #53483f;
+  color: #cfc4b9;
+  margin: 0.68em 0;
+  padding: 0.12rem 0 0.12rem 0.95rem;
+}
+
+.markdown-content hr {
+  border: 0;
+  border-top: 1px solid #332d27;
+  margin: 0.72rem 0;
+}
+
+.markdown-content table {
+  border-collapse: collapse;
+  display: block;
+  margin: 0.72rem 0;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.markdown-content th,
+.markdown-content td {
+  border: 1px solid #3a332d;
+  padding: 0.38rem 0.5rem;
+  text-align: left;
+}
+
+.markdown-content th {
+  background: #241f1b;
+  color: #f0e8df;
+  font-weight: 620;
+}
+
+.markdown-content td {
+  color: #ddd4ca;
+}
+
+.markdown-inline-code {
+  background: #29241f;
+  border: 1px solid #3a332d;
+  border-radius: 5px;
+  color: #f0d3ad;
+  font-family:
+    "SF Mono",
+    "Cascadia Code",
+    "Menlo",
+    monospace;
+  font-size: 0.92em;
+  padding: 0.08rem 0.28rem;
+}
+
+.markdown-code-block {
+  background: #181615;
+  border: 1px solid #302a25;
+  border-radius: 14px;
+  margin: 0.78rem 0;
+  overflow: hidden;
+}
+
+.markdown-code-block-header {
+  align-items: center;
+  color: #9f958b;
+  display: flex;
+  font-size: 0.78em;
+  justify-content: space-between;
+  min-height: 2.25rem;
+  padding: 0.5rem 0.5rem 0 0.8rem;
+}
+
+.markdown-code-block-header span {
+  font-family:
+    "SF Mono",
+    "Cascadia Code",
+    "Menlo",
+    monospace;
+}
+
+.markdown-code-block-header button {
+  align-items: center;
+  border-radius: 8px;
+  color: #736961;
+  display: flex;
+  font-size: 0.92em;
+  height: 1.75rem;
+  justify-content: center;
+  padding: 0;
+  transform: scale(1);
+  will-change: transform;
+  transition:
+    background 140ms ease,
+    color 140ms ease,
+    transform 100ms ease-out;
+  width: 1.75rem;
+}
+
+.markdown-code-block-header button:hover {
+  background: #201d1a;
+  color: #8c8178;
+}
+
+.markdown-code-block-header button:active {
+  transform: scale(0.92);
+}
+
+.markdown-code-block pre,
+.markdown-code-highlight pre {
+  background: transparent !important;
+  counter-reset: code-line;
+  margin: 0;
+  overflow-x: auto;
+  padding: 0.38rem 0 0.82rem;
+}
+
+.markdown-code-block code,
+.markdown-code-highlight code {
+  color: #eee0d0;
+  font-family:
+    "SF Mono",
+    "Cascadia Code",
+    "Menlo",
+    monospace;
+  font-size: 0.9em;
+  line-height: 1.58;
+  white-space: normal;
+}
+
+.markdown-code-block .line,
+.markdown-code-highlight .line {
+  counter-increment: code-line;
+  display: block;
+  line-height: inherit;
+  min-height: 1.58em;
+  padding: 0 0.9rem 0 3.18rem;
+  position: relative;
+  white-space: pre;
+}
+
+.markdown-code-block .line::before,
+.markdown-code-highlight .line::before {
+  color: #625951;
+  content: counter(code-line);
+  font-variant-numeric: tabular-nums;
+  left: 0.34rem;
+  padding-right: 0.55rem;
+  position: absolute;
+  text-align: right;
+  user-select: none;
+  width: 2.25rem;
+}
+
+.markdown-content > p + p,
+.markdown-content > p + ul,
+.markdown-content > p + ol,
+.markdown-content > p + blockquote,
+.markdown-content > p + table,
+.markdown-content > p + hr,
+.markdown-content > p + .markdown-code-block,
+.markdown-content > ul + p,
+.markdown-content > ul + ul,
+.markdown-content > ul + ol,
+.markdown-content > ul + blockquote,
+.markdown-content > ul + table,
+.markdown-content > ul + hr,
+.markdown-content > ul + .markdown-code-block,
+.markdown-content > ol + p,
+.markdown-content > ol + ul,
+.markdown-content > ol + ol,
+.markdown-content > ol + blockquote,
+.markdown-content > ol + table,
+.markdown-content > ol + hr,
+.markdown-content > ol + .markdown-code-block,
+.markdown-content > blockquote + p,
+.markdown-content > blockquote + ul,
+.markdown-content > blockquote + ol,
+.markdown-content > blockquote + blockquote,
+.markdown-content > blockquote + table,
+.markdown-content > blockquote + hr,
+.markdown-content > blockquote + .markdown-code-block,
+.markdown-content > table + p,
+.markdown-content > table + ul,
+.markdown-content > table + ol,
+.markdown-content > table + blockquote,
+.markdown-content > table + table,
+.markdown-content > table + hr,
+.markdown-content > table + .markdown-code-block,
+.markdown-content > .markdown-code-block + p,
+.markdown-content > .markdown-code-block + ul,
+.markdown-content > .markdown-code-block + ol,
+.markdown-content > .markdown-code-block + blockquote,
+.markdown-content > .markdown-code-block + table,
+.markdown-content > .markdown-code-block + hr,
+.markdown-content > .markdown-code-block + .markdown-code-block {
+  margin-top: 1.28em;
+}
+
+.markdown-content > :first-child {
+  margin-top: 0;
+}
+
+.markdown-content > :last-child {
+  margin-bottom: 0;
+}
+
+.markdown-stream-token {
+  animation: markdownTokenIn 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  position: relative;
+}
+
+@keyframes markdownTokenIn {
+  from {
+    opacity: 0.08;
+    top: 5px;
+  }
+
+  to {
+    opacity: 1;
+    top: 0;
   }
 }

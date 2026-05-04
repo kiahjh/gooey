@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { SidebarStateSnapshot } from "../types/gooey";
+import type { Session, SidebarStateSnapshot } from "../types/gooey";
 import type {
   ConfiguredProviderModel,
   ProviderConnectionStatus,
@@ -34,3 +34,13 @@ export const refreshOpenAIChatGPTAccount = () =>
 
 export const getConfiguredProviderModels = () =>
   invoke<ConfiguredProviderModel[]>("get_configured_provider_models");
+
+export const sendPrompt = ({
+  modelId,
+  prompt,
+  sessionId,
+}: {
+  modelId: string;
+  prompt: string;
+  sessionId: string;
+}) => invoke<Session>("send_prompt", { modelId, prompt, sessionId });

@@ -2,6 +2,7 @@ import React, { useLayoutEffect, useRef, useState } from "react";
 import { ArrowUpIcon } from "lucide-react";
 import { getConfiguredProviderModels } from "../../lib/backend";
 import { getErrorMessage } from "../../lib/errors";
+import { useGooeyStore } from "../../state/useGooeyStore";
 import type { ConfiguredProviderModel } from "../../types/providers";
 import ComposerModelSelector from "./ComposerModelSelector";
 
@@ -11,6 +12,14 @@ const LINE_HEIGHT = 20;
 
 const PromptComposerShell: React.FC = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const activeSessionId = useGooeyStore((state) => state.activeSessionId);
+  const activeWorkspaceId = useGooeyStore((state) => state.activeWorkspaceId);
+  const activeSession = useGooeyStore((state) =>
+    state.workspaces
+      .find((workspace) => workspace.id === state.activeWorkspaceId)
+      ?.sessions.find((session) => session.id === state.activeSessionId) ?? null,
+  );
+  const sendPrompt = useGooeyStore((state) => state.sendPrompt);
   const [hasText, setHasText] = useState(false);
   const [models, setModels] = useState<ConfiguredProviderModel[]>([]);
   const [modelsLoading, setModelsLoading] = useState(true);
@@ -38,6 +47,27 @@ const PromptComposerShell: React.FC = () => {
   useLayoutEffect(() => {
     resizeTextarea();
   }, []);
+
+  const submitPrompt = () => {
+    const textarea = textareaRef.current;
+    const prompt = textarea?.value.trim() ?? "";
+
+    if (!prompt || !selectedModelId || !activeSessionId || activeSession?.status === "working") {
+      return;
+    }
+
+    if (textarea) {
+      textarea.value = "";
+      setHasText(false);
+      resizeTextarea();
+    }
+
+    void sendPrompt({
+      modelId: selectedModelId,
+      prompt,
+      sessionId: activeSessionId,
+    });
+  };
 
   React.useEffect(() => {
     let cancelled = false;
@@ -73,7 +103,7 @@ const PromptComposerShell: React.FC = () => {
   }, []);
 
   return (
-    <div className="prompt-composer mx-auto w-full max-w-[620px]">
+    <div className="prompt-composer mx-auto w-full max-w-[700px]">
       <div className="rounded-[24px] border border-[#37322d] bg-[#2c2926] shadow-[0_24px_72px_rgba(0,0,0,0.28)]">
         <div className="relative px-5 pb-[44px] pt-4">
           <textarea
@@ -81,11 +111,18 @@ const PromptComposerShell: React.FC = () => {
             aria-label="Prompt input"
             rows={MIN_ROWS}
             placeholder="Ask Gooey to do something..."
+            disabled={!activeWorkspaceId || !activeSessionId || activeSession?.status === "working"}
             onInput={(event) => {
               resizeTextarea();
               setHasText(event.currentTarget.value.trim().length > 0);
             }}
-            className="w-full resize-none overflow-y-hidden border-0 bg-transparent p-0 text-[13px] leading-5 tracking-[-0.02em] text-[#ece5dd] outline-none placeholder:text-[#79716a]"
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                submitPrompt();
+              }
+            }}
+            className="w-full resize-none overflow-y-hidden border-0 bg-transparent p-0 text-[13px] leading-5 text-[#ece5dd] outline-none placeholder:text-[#79716a] disabled:cursor-not-allowed disabled:text-[#837a72]"
           />
           <div className="absolute bottom-[8px] right-[8px] flex items-center gap-2">
             <ComposerModelSelector
@@ -96,8 +133,17 @@ const PromptComposerShell: React.FC = () => {
             />
             <button
               type="button"
-              className={`flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-full text-[#23201d] transition-colors ${
-                hasText ? "bg-[#ffffff]" : "bg-[#8f8b87]"
+              disabled={
+                !hasText ||
+                !selectedModelId ||
+                !activeSessionId ||
+                activeSession?.status === "working"
+              }
+              onClick={submitPrompt}
+              className={`flex h-[28px] w-[28px] shrink-0 items-center justify-center rounded-full text-[#23201d] transition-colors disabled:cursor-not-allowed ${
+                hasText && selectedModelId && activeSessionId && activeSession?.status !== "working"
+                  ? "bg-[#ffffff]"
+                  : "bg-[#8f8b87]"
               }`}
               aria-label="Send prompt"
             >

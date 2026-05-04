@@ -1,6 +1,34 @@
-export type SessionEvent = {
-  type: string;
+export type UserSessionEvent = {
+  id: string;
+  type: "user";
+  createdAt: string;
+  text: string;
 };
+
+export type AssistantSessionEvent = {
+  id: string;
+  type: "assistant";
+  createdAt: string;
+  model: string;
+  provider: "openai";
+  runId: string;
+  streamParts?: string[];
+  text: string;
+};
+
+export type SystemSessionEvent = {
+  id: string;
+  type: "system";
+  createdAt: string;
+  level: "error" | "info";
+  runId?: string;
+  text: string;
+};
+
+export type SessionEvent =
+  | AssistantSessionEvent
+  | SystemSessionEvent
+  | UserSessionEvent;
 
 export type SessionStatus = "idle" | "unread" | "working";
 
